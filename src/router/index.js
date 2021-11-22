@@ -16,6 +16,7 @@ const routes = [
   {
     path: "/logs",
     name: "Logs",
+    meta:{requiresAuth: true},
     component: Logs,
 
   },
@@ -36,6 +37,15 @@ const router = new VueRouter({
 
 // Save each route to localstorage.
 router.beforeEach((to, from, next) => {
+  if(to.matched.some(record => record.meta.requiresAuth))
+  {
+    const requiresAuth = require("@/middleware/require-Auth.js")
+    requiresAuth.default(store, next)
+  } else
+  {
+    //always put next(), important!! 
+    next() 
+  }
   // Get route history from localstorage.
   const history = localStorage.getItem("routingHistory")
     ? JSON.parse(localStorage.getItem("routingHistory"))
@@ -44,7 +54,6 @@ router.beforeEach((to, from, next) => {
     from: from.fullPath, // Fullpath at from.
     to: to.fullPath, // Fullpath at to.
     date: new Date(),
-    authorized: to.name === "Logs" ? store.getters.getIsAdmin : true,
   };
   history.push(routerHistory);
   localStorage.setItem("routingHistory", JSON.stringify([...history]));

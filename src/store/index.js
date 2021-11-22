@@ -6,7 +6,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    isAdmin: 'true',
+    isAdmin: false,
     title: 'Company',
     number: 0,
     apiURL: 'https://imdb8.p.rapidapi.com/',
@@ -20,18 +20,16 @@ export default new Vuex.Store({
     actorDetails: [],
   },
   mutations: {
-    changeStateOfAdmin(state) {
-      state.isAdmin = !state.isAdmin;
+    SET_IS_ADMIN(state, payload){
+      state.isAdmin = payload
     },
 
     deleteMatchedCompanies(state) {
       state.matchedCompanies = [];
     },
     
-
   },
   actions: {
-
     searchCompany(context, data) {
       axios
         .get(`${context.state.api_endpoint}/query`, {
@@ -54,10 +52,7 @@ export default new Vuex.Store({
   },
 
   getters: {
-    getIsAdmin(state) {
-      return state.isAdmin;
 
-    }
   },
   modules: {},
 });

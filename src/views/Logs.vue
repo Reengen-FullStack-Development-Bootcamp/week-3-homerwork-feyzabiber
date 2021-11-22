@@ -1,38 +1,43 @@
 <template>
   <div class="Logs">
     <!-- ADMIN -->
-    <div v-if="AdminStatus">
-      <h2> Logs </h2>
-          <div>
-            {{ items }}
-          </div>
+    <div v-if="isAdmin">
+      <h2>Logs</h2>
+      <div align="left">
+        <!--{{ items }}-->
+        <v-treeview :items="items" v-if="isAdmin">
+          <template #label="data" style="">
+            <div
+              :style="{
+                color: data.item.authorized ? 'black' : 'red',
+                'font-weight': data.item.authorized ? 'normal' : 'bold',
+              }"
+            >
+              {{ data.item.name }}
+            </div>
+          </template>
+        </v-treeview>
+      </div>
     </div>
 
     <!-- GUESTS -->
-    <div v-else text-color="red"> !!! Authorized Access !!!
-
-          <v-snackbar v-model="showAlert" :color="AdminStatus ? 'white' : 'red'"
-      >You cannot see logs because you are not an admin.
-      <template v-slot:action="{ attrs }">
-        <v-btn color="white" text v-bind="attrs" @click="showAlert = false">
-          Close
-        </v-btn>
-      </template></v-snackbar>
-
-    </div>
-    
+    <div v-else text-color="red">!!! Authorized Access !!!</div>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   data: () => ({
-    items: [], 
-    showAlert: false, 
-    AdminStatus: true, 
+    items: [],
+    showAlert: false,
   }),
-  created() {
+  computed: {
+    ...mapState(["isAdmin"]),
+  },
 
+  created() {
     const logs = JSON.parse(localStorage.getItem("routingHistory"));
     if (logs) {
       this.items = [
@@ -50,12 +55,7 @@ export default {
       ];
     }
   },
-  mounted() {
-    if (this.$store.getters.getIsAdmin) {
-      this.showAlert = false;
-      this.AdminStatus = true;
-    }
-  },
+  mounted() {},
   methods: {
     // Remove all logs in localstorage.
     removeAllLogs() {
@@ -63,16 +63,10 @@ export default {
       this.items = [];
     },
   },
-  watch: {
-    "$store.getters.getIsAdmin"(val) {
-      this.showAlert = !val;
-      this.AdminStatus = val;
-    },
-  },
+  watch: {},
 };
 </script>
 
 
 <style scoped>
-
 </style>
