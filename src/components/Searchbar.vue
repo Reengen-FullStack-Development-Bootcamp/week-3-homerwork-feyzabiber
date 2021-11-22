@@ -1,68 +1,77 @@
 <template>
-
-  <v-col>
-    <v-autocomplete
-      v-model="SearchBarValue"
-      loading="Loading..."
-      color="blue"
-      hide-no-data
-      hide-selected
-      item-text="Description"
-      item-value="API"
-      label="Companies"
-      placeholder="Start typing to Search"
-      prepend-inner-icon="mdi-magnify"
-      return-object
-      clearable
-      outlined
-      solo
-      v-on:keyup.enter="searchCompaniesByKeywords"
-    ></v-autocomplete>
-    <v-btn rounded height="auto">Search</v-btn>
-  </v-col>
+<v-app>
+    <v-main>
+       <v-card
+        color="green darken-5"
+        dark
+      >
+        <v-card-text>
+          <v-autocomplete
+            clearable
+            v-model="model"
+            :search-input.sync="search"
+            :items="items"
+            item-text="name"
+            item-value="symbol"
+            color="white"
+            hide-no-data
+            hide-selected
+            label="Search Symbols"
+            placeholder="Start typing to Search"
+            prepend-icon="mdi-magnify"
+            return-object
+          ></v-autocomplete>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-expand-transition>
+          <v-list class="green dark-6">
+            <v-list-item
+              v-for="(field, i) in symbols"
+              :key="i"
+            >
+              <v-list-item-content>
+                <v-list-item-title>{{field["1. symbol"]}}</v-list-item-title>
+                <v-list-item-subtitle>{{field["2. name"]}}</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-expand-transition>
+      </v-card> 
+    </v-main>
+  </v-app>
 </template>
 
 <script>
+import { mapActions, mapState } from "vuex";
+
 export default {
   name: "Searchbar",
   data() {
     return {
-      SearchBarValue: "",
-      loading: false,
-      selectedCompany: null, 
+      search: null,
+      items: [],
+      model: null,
     };
   },
   computed: {
-        // Returns matchedCompanies from store.
-    matchedCompanies() {
-      return this.$store.state.matchedCompanies;
+    ...mapState(["symbols"]),
+  },
+  watch: {
+    search(val) {
+      if(val.length > 3) {
+        this.getSymbols(val);
+      }
     },
   },
 
   methods: {
-     searchCompaniesByKeywords() {
-      if (this.SearchBarValue && this.SearchBarValue.length > 0) {
-        this.$store.dispatch("searchCompany", { keywords: this.SearchBarValue });
-      } else {
-        this.$store.commit("deleteMatchedCompanies");
-      }
-      this.selectedCompany = null;
-    },
-    setKeywords(keywords) {
-      this.keywords = keywords;
-    },
+    ...mapActions(["getSymbols"]),
   },
 
 
 
   mounted() {
-    if (this.$route.query.title) {
-      this.loading = true;
-      this.searchValue = this.$route.query.title;
-      this.searchFromMovieTitle(this.searchValue).then(() => {
-        this.loading = false;
-      });
-    }
+    
   },
   
 };
