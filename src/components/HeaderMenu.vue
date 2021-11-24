@@ -3,10 +3,11 @@
     <v-app-bar color="deep-orange accent-4" dense dark>
       <v-toolbar-title> Stock Market </v-toolbar-title>
 
-      <v-btn rounded color="primary" dark router-link to="/logs">Logs</v-btn>
       <v-btn alignLeft rounded color="primary" dark router-link to="/"
         >Home</v-btn
       >
+      <v-btn rounded color="primary" dark router-link to="/logs">Logs</v-btn>
+      
 
       <v-spacer></v-spacer>
       <v-switch v-model="isAdmin" 

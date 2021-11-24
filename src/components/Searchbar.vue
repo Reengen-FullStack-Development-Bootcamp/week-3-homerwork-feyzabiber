@@ -29,14 +29,19 @@
               v-for="(field, i) in symbols"
               :key="i"
             >
-              <v-list-item-content>
+              <v-list-item-content align="left">
                 <v-list-item-title>{{field["1. symbol"]}}</v-list-item-title>
-                <v-list-item-subtitle>{{field["2. name"]}}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{field["2. name"]}}  
+                  <v-btn rounded color="primary" dark @click="selectSymbol(field)">Select
+                  </v-btn>
+                  </v-list-item-subtitle>
+                
               </v-list-item-content>
             </v-list-item>
           </v-list>
         </v-expand-transition>
       </v-card> 
+      
     </v-main>
   </v-app>
 </template>
@@ -66,6 +71,13 @@ export default {
 
   methods: {
     ...mapActions(["getSymbols"]),
+
+    selectSymbol(symbol) {
+      localStorage.setItem("sp_symbol", JSON.stringify(symbol));
+      this.$router.push({name: "Info",params: {symbol: symbol["1. symbol"],},
+      });
+      this.items = []; 
+    },
   },
 
 
