@@ -2,6 +2,9 @@
 
 ![Alt Text](https://github.com/FeyzaBiber/stock-market/blob/master/Animation.gif)
 
+# Demo
+stock-market-ten.vercel.app 
+
 ## Project setup
 ```
 npm install
