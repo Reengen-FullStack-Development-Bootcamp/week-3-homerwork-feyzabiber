@@ -1,5 +1,7 @@
 # stock-market
 
+![Alt Text](https://github.com/FeyzaBiber/stock-market/blob/master/Animation.gif)
+
 ## Project setup
 ```
 npm install
