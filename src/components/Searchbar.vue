@@ -2,8 +2,9 @@
 <v-app>
     <v-main>
        <v-card
-        color="green darken-5"
+        color="green lighten-1"
         dark
+        size="32"
       >
         <v-card-text>
           <v-autocomplete
@@ -17,7 +18,7 @@
             hide-no-data
             hide-selected
             label="Search Symbols"
-            placeholder="Start typing to Search"
+            placeholder="Start typing at least 3 letters to Search"
             prepend-icon="mdi-magnify"
             return-object
           ></v-autocomplete>
@@ -63,7 +64,7 @@ export default {
   },
   watch: {
     search(val) {
-      if(val.length > 3) {
+      if(val.length > 2) {
         this.getSymbols(val);
       }
     },
@@ -74,7 +75,7 @@ export default {
 
     selectSymbol(symbol) {
       localStorage.setItem("sp_symbol", JSON.stringify(symbol));
-      this.$router.push({name: "Info",params: {symbol: symbol["1. symbol"],},
+      this.$router.push({name: "Info",query: {symbol: symbol["1. symbol"], serie: "daily"},
       });
       this.items = []; 
     },

@@ -44,25 +44,19 @@ export default {
         ...logs.map((item, index) => ({
           id: index,
           name: `${new Date(item.date).toLocaleString()} ${
-            !item.authorized ? " - Failed" : ""
+            !item.isAdmin ? " - Failed" : ""
           }`,
-          authorized: item.authorized,
+          isAdmin: item.isAdmin,
           children: [
-            { name: `From: ${item.from}`, authorized: item.authorized },
-            { name: `To: ${item.to}`, authorized: item.authorized },
+            { name: `From: ${item.from}`, isAdmin: item.isAdmin },
+            { name: `To: ${item.to}`, isAdmin: item.isAdmin },
           ],
         })),
       ];
     }
   },
   mounted() {},
-  methods: {
-    // Remove all logs in localstorage.
-    removeAllLogs() {
-      localStorage.removeItem("routingHistory");
-      this.items = [];
-    },
-  },
+  methods: {},
   watch: {},
 };
 </script>

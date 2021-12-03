@@ -34,8 +34,6 @@ const router = new VueRouter({
   routes,
 });
 
-
-// Save each route to localstorage.
 router.beforeEach((to, from, next) => {
   if(to.matched.some(record => record.meta.requiresAuth))
   {
@@ -43,16 +41,15 @@ router.beforeEach((to, from, next) => {
     requiresAuth.default(store, next)
   } else
   {
-    //always put next(), important!! 
     next() 
   }
-  // Get route history from localstorage.
+ 
   const history = localStorage.getItem("routingHistory")
     ? JSON.parse(localStorage.getItem("routingHistory"))
     : [];
   const routerHistory = {
-    from: from.fullPath, // Fullpath at from.
-    to: to.fullPath, // Fullpath at to.
+    from: from.fullPath, 
+    to: to.fullPath, 
     date: new Date(),
   };
   history.push(routerHistory);

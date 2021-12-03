@@ -1,41 +1,9 @@
 <template>
   <v-card>
-    <v-card-actions class="justify-space-between py-5 px-5">
-      <div class="d-flex align-center">
-        <v-btn-toggle
-          dark
-
-          class="mr-5"
-        >
-          <v-btn rounded @click="$emit('daily', serie)"> Daily </v-btn>
-          <v-btn rounded @click="$emit('monthly', serie)"> Monthly </v-btn>
-          <v-btn rounded @click="$emit('yearly', serie)"> Yearly </v-btn>
-        </v-btn-toggle>
-
-      
-      </div>
-
-      <div class="subtitle-1">
-        {{ symbol["4. region"] }}
-        <v-icon>mdi-circle-small</v-icon>
-        {{ symbol["8. currency"] }}
-        <v-icon>mdi-circle-small</v-icon>
-        {{ symbol["5. marketOpen"] }} - 
-        {{ symbol["6. marketClose"] }}
-      </div>
-    </v-card-actions>
-    <v-divider></v-divider>
     <v-card-text>
-
       <div id="chart"></div>
-      <v-overlay
-        absolute
-        :value="$store.state.isLoading"
-      >
-        <v-progress-circular
-          indeterminate
-          size="64"
-        ></v-progress-circular>
+      <v-overlay absolute :value="$store.state.isLoading">
+        <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
     </v-card-text>
   </v-card>
@@ -47,35 +15,45 @@ import { mapGetters } from "vuex";
 export default {
   name: "CandleChart",
   props: {
-    draw: Boolean, // chart drawing trigger
-    serie: String,  // serie info
-    symbol: Object  // symbol info
+    isDrawing: Boolean,
+    serie: String,
+    symbol: Object,
   },
   data() {
     return {
-
+      series: ["daily", "weekly", "monthly"],
+      activeBtn: 0,
     };
   },
   computed: {
     ...mapGetters(["getFormattedTimeSeries"]),
   },
-  watch: {
-    // wathes the draw trigger and draws the chart acoordingly
-    //draw(isDrawing) {
-    //  if (isDrawing) {
-    //    this.drawChart(this.getFormattedTimeSeries(this.serie));
-    //  }
-   // },
-    // whatches the sma trigger and shows the sma graph in chart
 
-  },
   created() {
-    this.serie = "daily" 
-     this.drawChart(this.getFormattedTimeSeries(this.serie));
+    if (this.serie) {
+      this.activeBtn = this.series.indexOf(this.serie);
+    }
+  },
+  mounted() {
+    setTimeout(() => {
+      if (this.getFormattedTimeSeries(this.serie) != null) {
+        this.drawChart(this.getFormattedTimeSeries(this.serie));
+      }
+    }, 1000);
+  },
+
+  watch: {
+    serie: function (newValue) {
+      setTimeout(() => {
+        if (this.getFormattedTimeSeries(newValue) != null) {
+          this.drawChart(this.getFormattedTimeSeries(newValue));
+        }
+      }, 1000);
+    },
   },
   methods: {
-    // draws the chart
     drawChart(data) {
+   
       d3.selectAll("div#chart > *").remove();
       const width = 1300;
       const height = 500;
@@ -136,7 +114,7 @@ export default {
         .enter()
         .append("line")
         .attr("class", "x")
-        //.text(String)
+     
         .attr("x1", x)
         .attr("x2", x)
         .attr("y1", margin)
@@ -155,7 +133,7 @@ export default {
         .attr("stroke", "#ccc");
       chart
         .append("g")
-        .attr("transform", "translate(0," + 450 + ")") //need to change this 450 to a variable- it is how far down the axis will go
+        .attr("transform", "translate(0," + 450 + ")") 
         .attr("class", "xrule")
         .call(d3.axisBottom(x))
         .selectAll("text")
@@ -218,7 +196,7 @@ export default {
         .attr("stroke", function (d) {
           return d.open > d.close ? "red" : "green";
         });
-      // sma
+     
       chart
         .append("path")
         .data([data])
@@ -227,7 +205,7 @@ export default {
         .style("stroke", "red")
         .attr("fill", "none")
         .attr("stroke-width", 1)
-        .classed("hide-sma", !this.showSMA)
+        .classed("hide-sma", !this.showSMA);
     },
   },
 };
